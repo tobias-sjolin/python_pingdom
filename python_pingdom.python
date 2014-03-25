@@ -1,0 +1,27 @@
+import os,sys,subprocess,re
+
+print "Pinging network: " + sys.argv[1] 
+index = 0
+
+while (index < 25):
+
+    hostname = sys.argv[1]+str(index) #example
+    print "Pinging: " + hostname
+    #response = os.system("ping -c 1 " + hostname)
+    ping = subprocess.Popen(
+        ["ping", "-c", "4", hostname],
+        stdout = subprocess.PIPE,
+        stderr = subprocess.PIPE
+    )
+
+    out, error = ping.communicate()
+    i = out.find("icmp_seq=4")
+    if i != -1:
+        print("Host does not exist: "+out[i:])
+    else:
+        i = out.find("icmp_req=4")
+        if i != -1:
+            print("Host exists: "+out[i:])
+        else:
+            print("Unhandled result")
+    index = index+1
